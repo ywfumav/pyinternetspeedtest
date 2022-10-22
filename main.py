@@ -1,4 +1,8 @@
+import time
 import speedtest
+
+epoch_time = int(time.time())
+print("Epoch time is {}".format(epoch_time))
 
 test = speedtest.Speedtest(secure=True)
 
