@@ -19,4 +19,4 @@ print("Upload Speed: {:.2f} Mbps".format(upload_result/1024/1024))
 
 print("Performing Ping Test...")
 ping_result = test.results.ping
-print("Ping Latency: {:.2f}".format(ping_result))
+print("Ping Latency: {:.2f} ms".format(ping_result))
