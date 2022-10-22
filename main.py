@@ -2,7 +2,6 @@ import speedtest
 
 test = speedtest.Speedtest(secure=True)
 
-print("Loading server list...")
 test.get_servers()
 print("Choosing best servers...")
 best = test.get_best_server()
