@@ -17,3 +17,28 @@ C-->D[<font size = 3>Web GUI<br><font size = 2>Local Web interface to monitor <b
 ```
 
 ## Installation
+### Update Raspberry Pi
+```
+sudo apt update 
+sudo apt upgrade
+```
+
+### Install Git
+```
+sudo apt install git
+```
+
+### Install speedtest-cli
+```
+sudo pip3 install speedtest-cli
+```
+
+### Install MariadB
+```
+sudo apt install mariadb-server
+sudo pip3 install mysql-connector-python==8.0.29
+```
+
+
+### speedtest-cli
+
