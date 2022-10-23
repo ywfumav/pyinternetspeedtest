@@ -39,6 +39,8 @@ sudo apt install mariadb-server
 sudo pip3 install mysql-connector-python==8.0.29
 ```
 
+### Install Node-Red
+```
+```
 
-### speedtest-cli
 
