@@ -1,0 +1,621 @@
+[
+    {
+        "id": "188af2533470c3e4",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "f1a8a57d.896448",
+        "type": "inject",
+        "z": "188af2533470c3e4",
+        "name": "CREATE",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 360,
+        "y": 100,
+        "wires": [
+            [
+                "16d49f4f.2f72e1"
+            ]
+        ]
+    },
+    {
+        "id": "565b9eff.a027b",
+        "type": "inject",
+        "z": "188af2533470c3e4",
+        "name": "INSERT",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 360,
+        "y": 160,
+        "wires": [
+            [
+                "2ac9919.fbaf86e"
+            ]
+        ]
+    },
+    {
+        "id": "2ac9919.fbaf86e",
+        "type": "function",
+        "z": "188af2533470c3e4",
+        "name": "INSERT",
+        "func": "var date = new Date()\ndate.setHours(0); date.setMinutes(0); date.setSeconds(0); date.setMilliseconds(0);\n//var epoch = Math.floor(Math.random()* 86400000 + date.getTime())\nvar epoch = 86400000*2 + date.getTime()\nvar ping = Math.random() * 100\nvar download = Math.random() * 500\nvar upload = Math.random() * 200\nmsg.payload = {\n    epoch : epoch,\n    ping : ping,\n    download : download,\n    upload : upload\n}\nmsg.topic = \"INSERT INTO `internet` (`epoch`, `download`, `ping`, `upload`) VALUES (':epoch',':download',':ping',':upload');\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 160,
+        "wires": [
+            [
+                "fa2b97dc86984b93"
+            ]
+        ]
+    },
+    {
+        "id": "c1a61fe1.01abc",
+        "type": "inject",
+        "z": "188af2533470c3e4",
+        "name": "SELECT",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "1",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 360,
+        "y": 240,
+        "wires": [
+            [
+                "2fa7fa16.df7d36"
+            ]
+        ]
+    },
+    {
+        "id": "16d49f4f.2f72e1",
+        "type": "function",
+        "z": "188af2533470c3e4",
+        "name": "TABLE",
+        "func": "var topic;\ntopic = \"CREATE TABLE `internet` ( \";\ntopic = topic + \"`epoch` varchar(15) not null,\";\ntopic = topic + \"`download` float not null,\";\ntopic = topic + \"`ping` float not null,\";\ntopic = topic + \"`upload` float not null\";\ntopic = topic + \")\"\nmsg.topic = topic;\nmsg.payload = {\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 100,
+        "wires": [
+            [
+                "fa2b97dc86984b93"
+            ]
+        ]
+    },
+    {
+        "id": "2fa7fa16.df7d36",
+        "type": "function",
+        "z": "188af2533470c3e4",
+        "name": "SELECT",
+        "func": "var max,min;\nif (msg.topic == 'date'){\n    context.set('min', msg.payload)\n    context.set('max', msg.payload + 86400000)\n}\nif (context.get('min') == undefined){\n    var date = new Date()\n    date.setHours(0); date.setMinutes(0); date.setSeconds(0); date.setMilliseconds(0);\n    context.set('min', date.getTime())\n    context.set('max', 86400000 + date.getTime())\n}\nmax = context.get('max')\nmin = context.get('min')\nmsg.payload = {\n    min : min,\n    max : max\n}\nmsg.topic = \"SELECT * FROM `internet` WHERE `epoch` BETWEEN :min and :max ORDER BY `epoch` ASC;\"\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 240,
+        "wires": [
+            [
+                "fa2b97dc86984b93"
+            ]
+        ]
+    },
+    {
+        "id": "b530db35fe58a425",
+        "type": "function",
+        "z": "188af2533470c3e4",
+        "name": "download",
+        "func": "var min\nif (msg.topic == 'date') {\n    context.set('min', msg.payload)\n}\nif (context.get('min') == undefined) {\n    var date = new Date()\n    date.setHours(0); date.setMinutes(0); date.setSeconds(0); date.setMilliseconds(0);\n    context.set('min', date.getTime())\n}\nmin = context.get('min')\nvar data = []\nfor (const entry of msg.payload) {\n    data.push({\n        x: parseInt(entry.epoch),\n        y: entry.download,\n    })\n}\nmsg.ui_control = {\n    options: {\n        scales: {\n            xAxes: [{\n                type: 'time',\n                time: {\n                    min: min\n                }\n            }] /* ,\n                yAxes: [{\n                    ticks: {\n                        suggestedMin: 4,\n                        suggestedMax: 9.21\n                    }\n                }] */\n        }\n    },\n}\nif (data.length == 0) {\n    msg.payload = []\n} else {\n    msg.payload = [{\n        series: [\"A\"],\n        data: [data],\n        labels: [\"\"]\n    }]\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 100,
+        "wires": [
+            [
+                "271c5570595c5980"
+            ]
+        ]
+    },
+    {
+        "id": "0771a9a90368d836",
+        "type": "function",
+        "z": "188af2533470c3e4",
+        "name": "ping",
+        "func": "var date = new Date()\ndate.setHours(0); date.setMinutes(0); date.setSeconds(0); date.setMilliseconds(0);\nvar data = []\nfor (const entry of msg.payload) {\n    data.push({\n        x: parseInt(entry.epoch),\n        y: entry.ping,\n    })\n}\nmsg.ui_control = {\n    options: {\n        scales: {\n            xAxes: [{\n                type: 'time',\n                time: {\n                    min: date.getTime()\n                }\n            }] /* ,\n                yAxes: [{\n                    ticks: {\n                        suggestedMin: 4,\n                        suggestedMax: 9.21\n                    }\n                }] */\n        }\n    },\n}\nmsg.payload = [{\n    series: [\"A\"],\n    data: [data],\n    labels: [\"\"]\n}]\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 220,
+        "wires": [
+            [
+                "a954c4d38f019229"
+            ]
+        ]
+    },
+    {
+        "id": "37f73a6971ce9733",
+        "type": "function",
+        "z": "188af2533470c3e4",
+        "name": "upload",
+        "func": "var min\nif (msg.topic == 'date') {\n    context.set('min', msg.payload)\n}\nif (context.get('min') == undefined) {\n    var date = new Date()\n    date.setHours(0); date.setMinutes(0); date.setSeconds(0); date.setMilliseconds(0);\n    context.set('min', date.getTime())\n}\nmin = context.get('min')\nvar data = []\nfor (const entry of msg.payload) {\n    data.push({\n        x: parseInt(entry.epoch),\n        y: entry.upload,\n    })\n}\nmsg.ui_control = {\n    options: {\n        scales: {\n            xAxes: [{\n                type: 'time',\n                time: {\n                    min: min\n                }\n            }] /* ,\n                yAxes: [{\n                    ticks: {\n                        suggestedMin: 4,\n                        suggestedMax: 9.21\n                    }\n                }] */\n        }\n    },\n}\nif (data.length == 0){\n    msg.payload = []\n} else {\n    msg.payload = [{\n        series: [\"A\"],\n        data: [data],\n        labels: [\"\"]\n    }]\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 160,
+        "wires": [
+            [
+                "1a2a55344eebac9c"
+            ]
+        ]
+    },
+    {
+        "id": "94f51da794896558",
+        "type": "function",
+        "z": "188af2533470c3e4",
+        "name": "averageDownload",
+        "func": "var sum = 0\nfor (const entry of msg.payload) {\n    sum += entry.download\n}\nsum /= msg.payload.length\nmsg.payload = sum\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 380,
+        "wires": [
+            [
+                "873ebe1d8ec301ad"
+            ]
+        ]
+    },
+    {
+        "id": "7a298713c57daa69",
+        "type": "function",
+        "z": "188af2533470c3e4",
+        "name": "averageUpload",
+        "func": "var sum = 0\nfor (const entry of msg.payload) {\n    sum += entry.upload\n}\nsum /= msg.payload.length\nmsg.payload = sum\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 460,
+        "wires": [
+            [
+                "76159df0dc49739f"
+            ]
+        ]
+    },
+    {
+        "id": "c2daf3b65e1a164a",
+        "type": "function",
+        "z": "188af2533470c3e4",
+        "name": "averagePing",
+        "func": "var sum = 0\nfor (const entry of msg.payload) {\n    sum += entry.ping\n}\nsum /= msg.payload.length\nmsg.payload = sum\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 970,
+        "y": 540,
+        "wires": [
+            [
+                "884b7c911eb04085"
+            ]
+        ]
+    },
+    {
+        "id": "fa2b97dc86984b93",
+        "type": "Stackhero-MySQL",
+        "z": "188af2533470c3e4",
+        "server": "76f2ed6238ce8f93",
+        "name": "",
+        "x": 770,
+        "y": 160,
+        "wires": [
+            [
+                "b530db35fe58a425",
+                "37f73a6971ce9733",
+                "94f51da794896558",
+                "7a298713c57daa69",
+                "c2daf3b65e1a164a"
+            ]
+        ]
+    },
+    {
+        "id": "873ebe1d8ec301ad",
+        "type": "ui_artlessgauge",
+        "z": "188af2533470c3e4",
+        "group": "3ad893413273ebb9",
+        "order": 1,
+        "width": "4",
+        "height": "4",
+        "name": "dl",
+        "icon": "",
+        "label": "Download",
+        "unit": "mbps",
+        "layout": "radial",
+        "decimals": 0,
+        "differential": false,
+        "minmax": false,
+        "colorTrack": "#555555",
+        "style": "",
+        "colorFromTheme": true,
+        "property": "payload",
+        "secondary": "secondary",
+        "inline": false,
+        "animate": true,
+        "sectors": [
+            {
+                "val": 0,
+                "col": "#00ff00",
+                "t": "min",
+                "dot": 0
+            },
+            {
+                "val": 100,
+                "col": "#ff0000",
+                "t": "sec",
+                "dot": 0
+            },
+            {
+                "val": 500,
+                "col": "#ff0000",
+                "t": "max",
+                "dot": 0
+            }
+        ],
+        "lineWidth": "15",
+        "bgcolorFromTheme": true,
+        "diffCenter": "",
+        "x": 1190,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "76159df0dc49739f",
+        "type": "ui_artlessgauge",
+        "z": "188af2533470c3e4",
+        "group": "3ad893413273ebb9",
+        "order": 3,
+        "width": "4",
+        "height": "4",
+        "name": "up",
+        "icon": "",
+        "label": "Upload",
+        "unit": "mbps",
+        "layout": "radial",
+        "decimals": 0,
+        "differential": false,
+        "minmax": false,
+        "colorTrack": "#555555",
+        "style": "",
+        "colorFromTheme": true,
+        "property": "payload",
+        "secondary": "secondary",
+        "inline": false,
+        "animate": true,
+        "sectors": [
+            {
+                "val": 0,
+                "col": "#ff0000",
+                "t": "min",
+                "dot": 0
+            },
+            {
+                "val": 100,
+                "col": "#00ff00",
+                "t": "sec",
+                "dot": 0
+            },
+            {
+                "val": 200,
+                "col": "#00ff00",
+                "t": "max",
+                "dot": 0
+            }
+        ],
+        "lineWidth": "15",
+        "bgcolorFromTheme": true,
+        "diffCenter": "",
+        "x": 1190,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "884b7c911eb04085",
+        "type": "ui_artlessgauge",
+        "z": "188af2533470c3e4",
+        "group": "3ad893413273ebb9",
+        "order": 5,
+        "width": "4",
+        "height": "4",
+        "name": "ping",
+        "icon": "",
+        "label": "Ping",
+        "unit": "",
+        "layout": "radial",
+        "decimals": 0,
+        "differential": false,
+        "minmax": false,
+        "colorTrack": "#555555",
+        "style": "",
+        "colorFromTheme": true,
+        "property": "payload",
+        "secondary": "secondary",
+        "inline": false,
+        "animate": true,
+        "sectors": [
+            {
+                "val": 0,
+                "col": "#00ff00",
+                "t": "min",
+                "dot": 0
+            },
+            {
+                "val": 50,
+                "col": "#ff0000",
+                "t": "sec",
+                "dot": 0
+            },
+            {
+                "val": 100,
+                "col": "#ff0000",
+                "t": "max",
+                "dot": 0
+            }
+        ],
+        "lineWidth": "15",
+        "bgcolorFromTheme": true,
+        "diffCenter": "",
+        "x": 1190,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "271c5570595c5980",
+        "type": "ui_chart",
+        "z": "188af2533470c3e4",
+        "name": "dlchart",
+        "group": "3ad893413273ebb9",
+        "order": 2,
+        "width": "20",
+        "height": "4",
+        "label": "",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "10",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1230,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1a2a55344eebac9c",
+        "type": "ui_chart",
+        "z": "188af2533470c3e4",
+        "name": "upchart",
+        "group": "3ad893413273ebb9",
+        "order": 4,
+        "width": "20",
+        "height": "4",
+        "label": "",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "10",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1220,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a954c4d38f019229",
+        "type": "ui_chart",
+        "z": "188af2533470c3e4",
+        "d": true,
+        "name": "Chart",
+        "group": "3ad893413273ebb9",
+        "order": 6,
+        "width": "18",
+        "height": "5",
+        "label": "",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "10",
+        "removeOlder": "24",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1230,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6cdd76af13d57154",
+        "type": "ui_date_picker",
+        "z": "188af2533470c3e4",
+        "name": "",
+        "label": "Date",
+        "group": "3ad893413273ebb9",
+        "order": 6,
+        "width": "24",
+        "height": "2",
+        "passthru": true,
+        "topic": "date",
+        "topicType": "str",
+        "className": "",
+        "x": 590,
+        "y": 400,
+        "wires": [
+            [
+                "2fa7fa16.df7d36",
+                "b530db35fe58a425",
+                "37f73a6971ce9733"
+            ]
+        ]
+    },
+    {
+        "id": "76f2ed6238ce8f93",
+        "type": "Stackhero-MySQL-Server",
+        "name": "",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "tls": false,
+        "database": "wan"
+    },
+    {
+        "id": "3ad893413273ebb9",
+        "type": "ui_group",
+        "name": "gd",
+        "tab": "5aa9b5ef57a81db2",
+        "order": 1,
+        "disp": false,
+        "width": "24",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "5aa9b5ef57a81db2",
+        "type": "ui_tab",
+        "name": "gd",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
