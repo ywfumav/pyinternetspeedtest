@@ -60,11 +60,28 @@ sudo mysql_secure_installation
 sudo mysql -uroot -p<password>
 ```
 3. Useful commands to **Mariadb** 
+
+**Database Commands**
 ```
 SHOW DATABASES; ---> List current databases
 
 CREATE DATABASE <Database_name>; ---> create new database
+
+USE <database_name>; ---> access to database
+
 ```
+
+** Table Commands**
+```
+SHOW TABLES; ---> List current tables in database
+
+CREATE TABLE <Table_name>; ---> Create new table
+
+DESCRIBE <Table_name>; ---> Describe columns in table
+
+SELECT * FROM <Table_name>; ---> Show values in table
+```
+
 4. Create **new user**
 ```
 CREATE USER '<username>'@'localhost' IDENTIFIED BY '<password>';
