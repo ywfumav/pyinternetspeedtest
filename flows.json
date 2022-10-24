@@ -137,7 +137,7 @@
         "type": "function",
         "z": "63ef77c948992ea5",
         "name": "SELECT",
-        "func": "var max,min;\nif (msg.topic == 'date'){\n    context.set('min', msg.payload)\n    context.set('max', msg.payload + 86400000)\n}\nif (context.get('min') == undefined){\n    var date = new Date()\n    date.setHours(0); date.setMinutes(0); date.setSeconds(0); date.setMilliseconds(0);\n    context.set('min', date.getTime())\n    context.set('max', 86400000 + date.getTime())\n}\nmax = context.get('max')\nmin = context.get('min')\nmsg.payload = {\n    min : min,\n    max : max\n}\nmsg.topic = \"SELECT * FROM `internet` WHERE `epoch` BETWEEN :min and :max ORDER BY `epoch` ASC;\"\nreturn msg;\n",
+        "func": "var max,min;\nif (msg.topic == 'date'){\n    context.set('min', msg.payload)\n    context.set('max', msg.payload + 86400000)\n}\nif (context.get('min') == undefined){\n    var date = new Date()\n    date.setHours(0); date.setMinutes(0); date.setSeconds(0); date.setMilliseconds(0);\n    context.set('min', date.getTime())\n    context.set('max', 86400000 + date.getTime())\n}\nmax = context.get('max')\nmin = context.get('min')\nmsg.payload = {\n    min: min - 28800000,\n    max: max - 28800000\n}\nmsg.topic = \"SELECT * FROM `internet` WHERE `epoch` BETWEEN :min and :max ORDER BY `epoch` ASC;\"\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
