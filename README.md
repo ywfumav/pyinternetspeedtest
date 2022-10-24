@@ -139,3 +139,29 @@ Password = password (Generate using **Bcrypt Hash** - example: https://bcrypt-ge
 6. Importing Flow 
 Import **flows.json** into Dashboard. `options (top right corner), Import > Select a file to import`
 ![](nodeRed%20Diagram/import.png)
+
+7. Configuring Flow
+
+To configure **Maria DB** access, double click on the db node, then access the setting via the **edit** button. 
+
+![](nodeRed%20Diagram/db.png)
+
+Edit the following parameters.
+```
+Host: 127.0.0.1
+Port: 3306
+User: <username>
+Password: <password>
+Database: wan
+```
+
+8. To create database table, **internet**, click on the create button in the flow (**red circle**).
+
+![](nodeRed%20Diagram/flow.png)
+
+9. To change GUI to **dark mode**
+
+Click on arrow button (top right corner)
+`dashboard > theme > style > Dark`
+
+### Setting up Complete
