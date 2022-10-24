@@ -165,3 +165,14 @@ Click on arrow button (top right corner)
 `dashboard > theme > style > Dark`
 
 ### Setting up Complete
+<br><br>
+
+## Logging onto GUI
+Go to the following ip address
+```
+ip_address:1880/ui
+```
+
+Below is a sample of the GUI
+
+![](nodeRed%20Diagram/GUI.PNG)
