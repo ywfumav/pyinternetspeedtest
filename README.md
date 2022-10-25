@@ -1,3 +1,32 @@
+Skip to content
+Search or jump to…
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@ywfumav 
+ywfumav
+/
+pyinternetspeedtest
+Public
+Code
+Issues
+Pull requests
+Actions
+Projects
+Wiki
+Security
+Insights
+Settings
+pyinternetspeedtest/README.md
+@ywfumav
+ywfumav Update README.md
+Latest commit 0d63ccb 14 hours ago
+ History
+ 1 contributor
+195 lines (150 sloc)  4.2 KB
+
 # pyinternetspeedtest
 An internet speed test monitor.
 
@@ -10,7 +39,7 @@ OS: **Raspbian Buster Lite**
 ## Code Flowchart
 ```mermaid
 graph TD;
-A[<font size = 3>main.py]-->B[<font size = 3>speedtest-cli<br><font size = 2>conduct internet speed test every minute] 
+A[<font size = 3>main.py]-->B[<font size = 3>speedtest-cli<br><font size = 2>conduct internet speed <br> test every minute] 
 B-->A
 A-->C[<font size = 3>database<br><font size = 2>store speed test results<br>datetime<br>download speed<br>upload speed<br>ping]
 C-->D[<font size = 3>Web GUI<br><font size = 2>Local Web interface to monitor <br> speed test results ]
@@ -64,21 +93,15 @@ sudo mysql -uroot -p<password>
 **Database Commands**
 ```
 SHOW DATABASES; ---> List current databases
-
 CREATE DATABASE <Database_name>; ---> create new database
-
 USE <database_name>; ---> access to database
-
 ```
 
 ** Table Commands**
 ```
 SHOW TABLES; ---> List current tables in database
-
 CREATE TABLE <Table_name>; ---> Create new table
-
 DESCRIBE <Table_name>; ---> Describe columns in table
-
 SELECT * FROM <Table_name>; ---> Show values in table
 ```
 
