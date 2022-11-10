@@ -15,6 +15,7 @@ B-->A
 A-->C[<font size = 3>database<br><font size = 2>store speed test results<br>datetime<br>download speed<br>upload speed<br>ping]
 C-->D[<font size = 3>Web GUI<br><font size = 2>Local Web interface to monitor <br> speed test results ]
 ```
+*Code Flow Chart*
 
 ## Installation
 ### Update Raspberry Pi
@@ -140,6 +141,7 @@ nano /home/<user>/.node-red/setting.js
 
 Uncomment **adminAuth**
 ![](nodeRed%20Diagram/uncommentedAdminAuth.png)
+*Screenshot of setting.js section*
 
 **Example**
 
@@ -150,12 +152,14 @@ Password = password (Generate using **Bcrypt Hash** - example: https://bcrypt-ge
 6. Importing Flow 
 Import **flows.json** into Dashboard. `options (top right corner), Import > Select a file to import`
 ![](nodeRed%20Diagram/import.png)
+*Node Red Import Window*
 
 7. Configuring Flow
 
 To configure **Maria DB** access, double click on the db node, then access the setting via the **edit** button. 
 
 ![](nodeRed%20Diagram/db.png)
+<br>*Database node icon*
 
 Edit the following parameters.
 ```
@@ -169,6 +173,7 @@ Database: wan
 8. To create database table, **internet**, click on the create button in the flow (**red circle**).
 
 ![](nodeRed%20Diagram/flow.png)
+*Node Red Sample Flowchart*
 
 9. To change GUI to **dark mode**
 
@@ -187,3 +192,4 @@ ip_address:1880/ui
 Below is a sample of the GUI
 
 ![](nodeRed%20Diagram/GUI.PNG)
+*pyinternettest GUI screenshot*
